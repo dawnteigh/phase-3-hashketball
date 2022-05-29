@@ -1,4 +1,5 @@
-# Write your code below game_hash
+require 'pry'
+
 def game_hash
   {
     home: {
@@ -126,4 +127,84 @@ def game_hash
   }
 end
 
-# Write code here
+def players
+home_players = game_hash[:home][:players]
+away_players = game_hash[:away][:players]
+home_players.concat away_players
+end
+
+def num_points_scored(name)
+  players.find { |player| player[:player_name] == name }[:points]
+end
+
+def shoe_size(name)
+  players.find { |player| player[:player_name] == name }[:shoe]
+end
+
+def player_stats(name)
+  players.find { |player| player[:player_name] == name }
+end
+
+def teams
+game_hash.values
+end
+
+def find_team team_name
+  teams.find { |team| team[:team_name] == team_name }
+end
+
+def team_colors(team)
+  t = find_team(team)
+  t[:colors]
+end
+
+def team_names
+  team_array = []
+  teams.filter do |team|
+    team_array << team[:team_name] 
+  end
+  team_array
+end
+
+def player_numbers team
+  find_team(team)[:players].map{ |player| player[:number] }
+end
+
+def big_shoe_rebounds
+  biggest = players.map{ |player| player[:shoe] }.max
+  the_guy = players.find{ |player| player[:shoe] == biggest }
+  the_guy[:rebounds]
+end
+
+def most_points_scored
+  highest_total = players.map{ |player| player[:points] }.max
+  players.find{ |player| player[:points] == highest_total }[:player_name]
+end
+
+def winning_team
+  home_team = game_hash[:home][:team_name]
+  away_team = game_hash[:away][:team_name]
+  home_score = game_hash[:home][:players].map{ |player| player[:points] }.sum
+  away_score = game_hash[:away][:players].map{ |player| player[:points] }.sum
+  if home_score > away_score
+    "The #{home_team} win with #{home_score} points!"
+  elsif home_score = away_score
+    "The #{home_team} and #{away_team} have tied at #{home_score} apiece."
+  else
+    "The #{away_team} win with #{away_score} points!"
+  end
+end
+
+def player_with_longest_name
+  longest_name = players.map{ |player| player[:player_name].length }.max
+  players.find{ |player| player[:player_name].length == longest_name }[:player_name]
+end
+
+def most_steals
+  highest_total = players.map{ |player| player[:steals] }.max
+  players.find{ |player| player[:steals] == highest_total }[:player_name]
+end
+
+def long_name_steals_a_ton?
+  player_with_longest_name == most_steals
+end
